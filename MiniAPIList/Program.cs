@@ -18,6 +18,23 @@ app.MapGet("/shoppinglist/{id}", async (int id, ApiDbContext db) =>
     return grocery != null ? Results.Ok(grocery) : Results.NotFound();
 });
 
+app.MapPut("/shoppinglist/{id}", async (int id, Grocery grocery, ApiDbContext db) => {
+
+    var groceryInBd = await db.Groceries.FindAsync(id);
+
+    if(groceryInBd != null)
+    {
+        // db.Update(grocery);
+        groceryInBd.Name = grocery.Name;
+        groceryInBd.Purchased = grocery.Purchased;
+        await db.SaveChangesAsync();
+        return Results.Ok(groceryInBd);
+    }
+
+    return Results.NotFound();
+
+});
+
 
 app.MapDelete("/shoppinglist/{id}", async (int id, ApiDbContext db) =>
 {
